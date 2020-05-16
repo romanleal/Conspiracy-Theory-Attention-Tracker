@@ -13,17 +13,11 @@ reddit = praw.Reddit(client_id='AsiCpzs5kpc_Tg',
                      password='wP8^34CurtJc')
 
 # Subreddits to be scraped.
-subreddits = ['politics', 'conspiracy', 'relationship_advice', 'confession']
+subreddits = ['conspiracy', 'politics']
 
 # Tag the subreddits here (must correspond with object position in subreddits list).
 # 0 = political posts ; 1 = conspiracy posts ; 2 = other
-classifiers = [0, 1, 2, 2]
-
-
-# Function converts from Reddit's UNIX date format to Year-Month-Day-Time
-def get_date(created):
-    return dt.datetime.fromtimestamp(created)
-
+classifiers = [1, 0]
 
 # Sets up a dictionary to store the subreddit data.
 subreddit_dict = {"title": [],
@@ -38,8 +32,8 @@ subreddit_dict = {"title": [],
 # Iterative script to scrape targeted subreddits.
 for post in subreddits:
     select_subreddit = reddit.subreddit(str(post))
-    hot_posts = select_subreddit.hot(limit=1)
-    for submission in hot_posts:
+    top_posts = select_subreddit.top('month', limit=50)
+    for submission in top_posts:
         subreddit_dict["title"].append(submission.title)
         subreddit_dict["score"].append(submission.score)
         subreddit_dict["id"].append(submission.id)
@@ -59,6 +53,12 @@ for post_id in subreddit_dict["id"]:
         words_countable = words.split()
         post_comment_word_count += len(words_countable)
     subreddit_dict["comms_word_count"].append(post_comment_word_count)
+
+
+# Function converts from Reddit's UNIX date format to Year-Month-Day-Time
+def get_date(created):
+    return dt.datetime.fromtimestamp(created)
+
 
 subreddit_data = pd.DataFrame(subreddit_dict)
 _timestamp = subreddit_data["created"].apply(get_date)
