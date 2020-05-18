@@ -1,3 +1,4 @@
+import config
 import pandas as pd
 import praw
 import datetime as dt
@@ -6,11 +7,11 @@ import datetime as dt
 full_data_set = []
 
 # API access.
-reddit = praw.Reddit(client_id='AsiCpzs5kpc_Tg',
-                     client_secret='6K2_etDSmL8kuxVdGO2FwEjQPtc',
-                     user_agent='Python Scraper',
-                     username='Conspiracy_Theory_',
-                     password='wP8^34CurtJc')
+reddit = praw.Reddit(client_id=config.client_id,
+                     client_secret=config.client_secret,
+                     user_agent=config.user_agent,
+                     username=config.username,
+                     password=config.password)
 
 # Subreddits to be scraped.
 subreddits = ['conspiracy', 'politics']
